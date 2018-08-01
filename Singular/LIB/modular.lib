@@ -78,6 +78,8 @@ NOTE:     For the general algorithm and the role of the optional arguments
 SEE ALSO: modStd
 EXAMPLE:  example modular; shows an example"
 {
+int t = timer;
+int rt = rtimer;
     /* check for errors */
     if (char(basering) != 0)
     { ERROR("The characteristic must be zero."); }
@@ -126,6 +128,10 @@ EXAMPLE:  example modular; shows an example"
     int p;
     list indices;
     int ncores_available;
+"modular: "+Command;
+"startup: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
     while (1)
     {
         // compute list of primes
@@ -147,9 +153,13 @@ EXAMPLE:  example modular; shows an example"
                     *ncores_available;
             }
         }
+"primes: "+string(nNewPrimes);
         primes = primeList(nNewPrimes, pmax);
         pmax = primes[size(primes)]-1;
         nAllPrimes = nAllPrimes+nNewPrimes;
+"list of primes: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
 
         // do computation modulo several primes
         for (i = size(primes); i > 0; i--)
@@ -164,6 +174,9 @@ EXAMPLE:  example modular; shows an example"
             killTask(t(i));
             kill t(i);
         }
+"modular computations: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
 
         // delete unlucky primes
         indices = deleteUnluckyPrimes(modresults);
@@ -177,9 +190,17 @@ EXAMPLE:  example modular; shows an example"
         }
         for (i = size(indices); i > 0; i--)
         {
+"";
+"======================";
+"UNLUCKY PRIME DETECTED";
+"======================";
+"";
             modresults = delete(modresults, indices[i]);
             primes = delete(primes, indices[i]);
         }
+"delete unlucky primes: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
 
         // lift result
         if (N == 1)
@@ -192,13 +213,22 @@ EXAMPLE:  example modular; shows an example"
                 list(N)+primes);
         }
         modresults = list();
+"chinrem: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
         for (i = size(primes); i > 0; i--)
         {
             N = N*primes[i];
         }
+"multiply primes: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
 
         // apply farey
         result = farey_parallel(result_lift, N);
+"farey: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
 
         // pTest
         p = prime(random(pmax div 2, pmax-1));
@@ -207,11 +237,34 @@ EXAMPLE:  example modular; shows an example"
             if (p <= 2) { ERROR("no more primes"); }
             p = prime(random(p div 2, p-1));
         }
-        if (!pTest(Command, Arguments, result, p)) { continue; }
+        if (!pTest(Command, Arguments, result, p))
+        {
+"pTest: "+string(timer-t)+" "+string(rtimer-rt);
+"pTest failed";
+t = timer;
+rt = rtimer;
+"";
+            continue;
+        }
+"pTest: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
 
         // finalTest
-        if (finalTest(Command, Arguments, result)) break;
+        if (finalTest(Command, Arguments, result))
+        {
+"finalTest: "+string(timer-t)+" "+string(rtimer-rt);
+t = timer;
+rt = rtimer;
+            break;
+        }
+"finalTest: "+string(timer-t)+" "+string(rtimer-rt);
+"finalTest failed";
+t = timer;
+rt = rtimer;
+"";
     }
+"";
 
     /* kill exported data */
     kill Command;
