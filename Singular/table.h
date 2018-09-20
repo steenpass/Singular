@@ -72,6 +72,7 @@ const struct sValCmd1 dArith1[]=
 ,{D(jjCHAR),       CHARACTERISTIC_CMD, INT_CMD,     RING_CMD      , ALLOW_NC |ALLOW_RING}
 ,{D(jjCHARSERIES), CHAR_SERIES_CMD, MATRIX_CMD,     IDEAL_CMD     , NO_NC |NO_RING}
 ,{D(jjrCharStr),   CHARSTR_CMD,     STRING_CMD,     RING_CMD      , ALLOW_NC |ALLOW_RING}
+,{D(jjChordalData),CHORDAL_DATA_CMD,LIST_CMD,       IDEAL_CMD     , NO_NC |NO_RING}
 ,{D(jjOpenClose),  CLOSE_CMD,       NONE,           LINK_CMD      , ALLOW_NC |ALLOW_RING}
 #ifdef SINGULAR_4_2
 ,{D(jjDUMMY),      CMATRIX_CMD,     CMATRIX_CMD,    CMATRIX_CMD ,   ALLOW_NC |ALLOW_RING}
@@ -985,6 +986,7 @@ cmdnames cmds[] =
   { "char",        0, CHARACTERISTIC_CMD ,CMD_1},
   { "char_series", 0, CHAR_SERIES_CMD ,   CMD_1},
   { "charstr",     0, CHARSTR_CMD ,       CMD_1},
+  { "chordal_data",0, CHORDAL_DATA_CMD ,  CMD_1},
   { "chinrem",     0, CHINREM_CMD ,       CMD_2},
   { "cleardenom",  0, CONTENT_CMD ,       CMD_1},
   { "close",       0, CLOSE_CMD ,         CMD_1},
