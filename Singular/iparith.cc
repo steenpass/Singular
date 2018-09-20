@@ -49,6 +49,7 @@
 #include "kernel/preimage.h"
 #include "kernel/polys.h"
 #include "kernel/ideals.h"
+#include "kernel/chordal.h"
 
 #include "Singular/mod_lib.h"
 #include "Singular/fevoices.h"
@@ -3691,6 +3692,10 @@ static BOOLEAN jjCALL1MANY(leftv res, leftv u)
 static BOOLEAN jjCHAR(leftv res, leftv v)
 {
   res->data = (char *)(long)rChar((ring)v->Data());
+  return FALSE;
+}
+static BOOLEAN jjChordalData(leftv res, leftv v)
+{
   return FALSE;
 }
 static BOOLEAN jjCOLS(leftv res, leftv v)
