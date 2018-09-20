@@ -9,7 +9,7 @@ $(FACTORY_INCLUDES) $(GMP_CPPFLAGS)
 SOURCES = polys.cc \
     ideals.cc \
     fast_mult.cc digitech.cc \
-    preimage.cc \
+    preimage.cc chordal.cc \
     mod2.h
 
 libkernelCommon_la_SOURCES  = $(SOURCES)
@@ -20,7 +20,7 @@ libkernelCommon_la_LDFLAGS = $(SINGULAR_LDFLAGS)
 ###### libkerneldir = $(libdir)/singular
 
 KERNELHEADERS = mod2.h structs.h polys.h ideals.h \
-	preimage.h fast_mult.h digitech.h
+	preimage.h fast_mult.h digitech.h chordal.h
 
 libkernel_la_SOURCES=$(KERNELHEADERS)
 libkernel_la_LDFLAGS = $(SINGULAR_LDFLAGS)
