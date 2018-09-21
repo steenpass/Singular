@@ -3696,6 +3696,116 @@ static BOOLEAN jjCHAR(leftv res, leftv v)
 }
 static BOOLEAN jjChordalData(leftv res, leftv v)
 {
+  const ring r = currRing;
+  ideal M = (ideal)v->Data();
+  if (idIs0(M))
+  {
+    WerrorS("ideal is zero-ideal");
+    return TRUE;
+  }
+
+  /* check that the ideal is monomial and squarefree */
+  for (int i = 0; i < M->ncols; i++)
+  {
+    if (pLength(M->m[i]) > 1)
+    {
+      WerrorS("ideal not monomial");
+      return TRUE;
+    }
+    for (int j = 1; j <= r->N; j++)
+    {
+      if (p_GetExp(M->m[i], j, r) > 1)
+      {
+        WerrorS("ideal not squarefree");
+        return TRUE;
+      }
+    }
+  }
+
+  /* check that all monomials have the same degree */
+  ARRAY_SIZE = p_Totaldegree(M->m[0], r);
+  for (int i = 1; i < M->ncols; i++)
+  {
+    if (p_Totaldegree(M->m[i], r) != ARRAY_SIZE)
+    {
+      WerrorS("monomial generators have different degrees");
+      return TRUE;
+    }
+  }
+
+  /* analogon to init() from kernel/chordal.cc */
+  max_inp = std::numeric_limits<int>::min();
+  min_inp = std::numeric_limits<int>::max();
+  for (int i = 0; i < M->ncols; i++)
+  {
+    std::vector<int> arr;
+    for (int j = 1; j <= r->N; j++)
+    {
+      if (p_GetExp(M->m[i], j, r))
+      {
+        arr.push_back(j);
+      }
+    }
+    // arr is already sorted
+    min_inp = std::min(min_inp, arr.front());
+    max_inp = std::max(max_inp, arr.back());
+    pool.insert(move(arr));
+  }
+
+  /* analogon to main() form kernel/chordal.cc */
+  lists L = (lists)omAllocBin(slists_bin);
+  for (std::set<std::vector<int>>::iterator itr = pool.begin();
+      itr != pool.end(); ++itr)
+  {
+    if (is_simplicial(itr, 0))
+    {
+      L->Init(4);
+      std::vector<int> result;
+      result.reserve(M->ncols);
+      int max_N = std::numeric_limits<int>::min();
+      for (int i = 0; i < (int)ans_subs_union.size(); i++)
+      {
+        int N = ans_subs_union[i].size() - ARRAY_SIZE + 1;
+        max_N = std::max(max_N, N);
+        result.push_back(N);
+      }
+      std::vector<int> l = find_lseq(result, max_N);
+      std::vector<int> h = find_hvector(result, max_N);
+      std::vector<int> b = find_BettiNums(max_N, h);
+      intvec *l_iv = new intvec(l.size());
+      intvec *r_iv = new intvec(result.size());
+      intvec *h_iv = new intvec(h.size());
+      intvec *b_iv = new intvec(b.size());
+      for (int i = 0; i < l.size(); i++)
+      {
+        (*l_iv)[i] = l[i];
+      }
+      for (int i = 0; i < result.size(); i++)
+      {
+        (*r_iv)[i] = result[i];
+      }
+      for (int i = 0; i < h.size(); i++)
+      {
+        (*h_iv)[i] = h[i];
+      }
+      for (int i = 0; i < b.size(); i++)
+      {
+        (*b_iv)[i] = b[i];
+      }
+      L->m[0].data = (void *)l_iv;
+      L->m[0].rtyp = INTVEC_CMD;
+      L->m[1].data = (void *)r_iv;
+      L->m[1].rtyp = INTVEC_CMD;
+      L->m[2].data = (void *)h_iv;
+      L->m[2].rtyp = INTVEC_CMD;
+      L->m[3].data = (void *)b_iv;
+      L->m[3].rtyp = INTVEC_CMD;
+      res->data = (void *)L;
+      return FALSE;
+    }
+  }
+  L->Init(0);
+  res->data = (void *)L;
   return FALSE;
 }
 static BOOLEAN jjCOLS(leftv res, leftv v)
