@@ -32,10 +32,10 @@ int tab;
 int max_inp, min_inp;
 int line_number;
 
-set<vector<int>> pool;
+set<vector<int> > pool;
 
-vector<vector<int>> ans_subs_union;
-vector<vector<int>> ans_selected_subset;
+vector<vector<int> > ans_subs_union;
+vector<vector<int> > ans_selected_subset;
 
 void print_tab(const char &ch, int &tab) {
 	if (ch == ' ') cout << endl;
@@ -112,7 +112,7 @@ int init() {
 		//	exit(0);
 		//}
 
-		pool.insert(move(arr));
+		pool.insert(std::move(arr));
 
 	}
 	return l;
@@ -227,9 +227,10 @@ int combination(int N, int M)
 vector<int> find_lseq(const vector<int>& input, int max)
 {
 	std::vector<int> l(max, 0);
-	for (const int&i : input)
+	for (std::vector<int>::const_iterator itr = input.begin();
+		itr != input.end(); ++itr)
 	{
-		++l[i-1];
+		++l[(*itr)-1];
 	}
 	return l;
 }
@@ -237,9 +238,10 @@ vector<int> find_lseq(const vector<int>& input, int max)
 int computeM(const vector<int>& input, int i)
 {
 	int res = 0;
-	for (const int& N : input)
+	for (std::vector<int>::const_iterator itr = input.begin();
+		itr != input.end(); ++itr)
 	{
-		res += combination(N, i);
+		res += combination((*itr), i);
 	}
 	return res;
 }
@@ -293,7 +295,7 @@ vector<int> find_BettiNums(int max, const vector<int>& h)
 {
 	int n = max_inp - min_inp + 1;
 	vector<int> B(n - ARRAY_SIZE + 1);
-	auto sizeHVector = h.size();
+	int sizeHVector = h.size();
 	for (int i = 1; i <= n+1 - ARRAY_SIZE; i++)
 	{
 		B[i-1] = 0;
@@ -319,7 +321,7 @@ vector<int> find_BettiNums(int max, const vector<int>& h)
 
 vector<int> find_BettiNums(const vector<int>& input, int max)
 {
-	auto h = find_hvector(input, max);
+	std::vector<int> h = find_hvector(input, max);
 	return find_BettiNums(max, h);
 }
 
@@ -327,20 +329,21 @@ void print_vector(const char* name, const vector<int>&input)
 {
 	cout << name << ": { ";
 	bool first = true;
-	for (const int&num : input)
+	for (std::vector<int>::const_iterator itr = input.begin();
+		itr != input.end(); ++itr)
 	{
 		if (first) first = false;
 		else cout << ",";
-		cout << num << " ";
+		cout << (*itr) << " ";
 	}
 	cout << " }" << endl;
 }
 
 int main() {
 
-	freopen("Duval.txt", "r", stdin);
+//	freopen("Duval.txt", "r", stdin);
 
-	freopen("out Duval.txt", "w", stdout);
+//	freopen("out Duval.txt", "w", stdout);
 
 	cout << "Read " << (line_number = init()) << " numbers of lines from input file." << endl;
 
